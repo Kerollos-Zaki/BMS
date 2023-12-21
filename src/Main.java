@@ -12,18 +12,23 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+// try - catch
+
+
 public class Main {
 
+    // Create a static variable from the main class to store the current authenticated user
     private static User authenticatedUser;
-    private static final int MAX_LOGIN_ATTEMPTS = 3;
 
+    // Maximum number of login attempts if we want to change it
+    private static final int MAX_LOGIN_ATTEMPTS = 3;
 
     public static void main(String[] args) {
         checkAndCreateFiles();
 
         Scanner scanner = new Scanner(System.in);
 
-        // Login portal
+        // Login dashboard for the user
         loginPortal(scanner);
 
         // Depending on the user type, display the appropriate interface
@@ -60,22 +65,23 @@ public class Main {
             switch (loginChoice) {
                 case 1:
                     // Admin login
-                    int found = authenticateUser(scanner, "admin", "admin");
+                    int found = authenticateAdmin(scanner, "admin", "admin");
+
                     //downcast
-                    if (found == 1)
+                    if (found == 1) // if the admin is found
                         adminInterface(scanner, (Admin) authenticatedUser);
                     break;
                 case 2:
                     // Employee login
                     found = authenticateUserFromFile(scanner, "employee.txt");
-                    //downcast
+                    // polymorphism downcast
                     if (found == 1)
                         employeeInterface(scanner, (Employee) authenticatedUser);
                     break;
                 case 3:
                     // Client login
                     found = authenticateUserFromFile(scanner, "client.txt");
-                    //downcast
+                    // polymorphism downcast
                     if (found == 1)
                         clientInterface(scanner, (Client) authenticatedUser);
                     break;
@@ -96,8 +102,7 @@ public class Main {
         }
     }
 
-
-    private static int authenticateUser(Scanner scanner, String username, String password) {
+    private static int authenticateAdmin(Scanner scanner, String username, String password) {
         // Authentication for admin
         System.out.print("Enter password for admin: ");
         String adminPassword = scanner.nextLine();
@@ -137,7 +142,7 @@ public class Main {
             if (!file.exists()) {
                 try {
                     if (file.createNewFile()) {
-                        //System.out.println(fileName + " created successfully.");
+                        System.out.println(fileName + " created successfully.");
                     } else {
                         System.out.println("Failed to create " + fileName);
                     }
@@ -145,7 +150,7 @@ public class Main {
                     System.err.println("Error creating file " + fileName + ": " + e.getMessage());
                 }
             } else {
-                // System.out.println(fileName + " already exists.");
+//                 System.out.println(fileName + " already exists.");
             }
         }
     }
@@ -283,8 +288,8 @@ public class Main {
                     System.out.print("Do you want to authorize another employee? (y/n): ");
                     String anotherAttempt = scanner.nextLine().trim().toLowerCase();
 
-                    if (!anotherAttempt.equals("y")) {
-                        // If the admin chooses not to authorize another employee, exit the loop
+                    if (anotherAttempt.equals("n")) {
+                        // If the admin chooses not to authorize another employee, exit the program
                         authorizeAnother = false;
                     }
                 } while (authorizeAnother);
@@ -292,7 +297,7 @@ public class Main {
                 break;
 
             case 2:
-                // Create employee accounts logic
+                // Create employee account logic
                 boolean createAnotherEmployee = true;
                 do {
                     admin.Create_Employee_Acc(UserAction.CREATE_EMPLOYEE_ACCOUNT);
@@ -301,8 +306,8 @@ public class Main {
                     System.out.print("Do you want to create another employee account? (y/n): ");
                     String anotherAttempt = scanner.nextLine().trim().toLowerCase();
 
-                    if (!anotherAttempt.equals("y")) {
-                        // If the admin chooses not to create another employee account, exit the loop
+                    if (anotherAttempt.equals("n")) {
+                        // If the admin chooses not to create another employee account, exit the program
                         createAnotherEmployee = false;
                     }
                 } while (createAnotherEmployee);
@@ -314,8 +319,8 @@ public class Main {
                 System.out.print("Do you want to go back to the admin interface? (y/n): ");
                 goBack = scanner.nextLine().trim().toLowerCase();
 
-                if (!goBack.equals("y")) {
-                    // If the admin chooses not to go back, exit the loop
+                if (goBack.equals("n")) {
+                    // If the admin chooses not to go back, exit the program
                     System.exit(0);
                 }
                 adminInterface(scanner, admin);
@@ -326,8 +331,8 @@ public class Main {
                 System.out.print("Do you want to go back to the admin interface? (y/n): ");
                 goBack = scanner.nextLine().trim().toLowerCase();
 
-                if (!goBack.equals("y")) {
-                    // If the admin chooses not to go back, exit the loop
+                if (goBack.equals("n")) {
+                    // If the admin chooses not to go back, exit the program
                     System.exit(0);
                 }
                 adminInterface(scanner, admin);
@@ -338,8 +343,8 @@ public class Main {
                 System.out.print("Do you want to go back to the admin interface? (y/n): ");
                 goBack = scanner.nextLine().trim().toLowerCase();
 
-                if (!goBack.equals("y")) {
-                    // If the admin chooses not to go back, exit the loop
+                if (goBack.equals("n")) {
+                    // If the admin chooses not to go back, exit the program
                     System.exit(0);
                 }
                 adminInterface(scanner, admin);
@@ -347,6 +352,7 @@ public class Main {
             case 6:
                 // Logout logic
                 System.out.println("Logging out. Returning to the login portal.");
+                // as deleting the authenticated user session and then to create another session for another user
                 authenticatedUser = null;
                 loginPortal(scanner);
                 break;
@@ -390,7 +396,7 @@ public class Main {
                 // Create a client account logic
                 boolean createAnother = true;
                 do {
-                    // will pass the create value from the uservalue enum for readability of the function inside
+                    // will pass the .CREATE value from the userAction enum for readability of the function inside
                     employee.Create_Client_Acc(UserAction.CREATE);
 
                     // Ask if the admin wants another attempt

@@ -108,22 +108,10 @@ public class User {
         }
     }
 
+    // this method is for the admin to see all the transactions
+    // it is overridden in the admin class
     public void Show_TransAdmin(UserAction type) {
-        if (type == UserAction.SHOW_TRANSACTIONS) {
-            // Read transactions from the file
-            List<String> transactions = readTransactionsFromFile();
 
-            // Display transactions
-            if (!transactions.isEmpty()) {
-                System.out.println("All Transactions:");
-                for (String transaction : transactions) {
-                    // Display each transaction
-                    System.out.println(transaction);
-                }
-            } else {
-                System.out.println("No transactions found.");
-            }
-        }
     }
 
     public void Display_Pers_info(UserAction type) {
@@ -207,7 +195,7 @@ public class User {
         return false;
     }
 
-    private List<String> readTransactionsFromFile() {
+    public List<String> readTransactionsFromFile() {
         List<String> transactions = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader("transaction.txt"))) {
             String line;

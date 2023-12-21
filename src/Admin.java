@@ -15,7 +15,9 @@ class Admin extends User {
     }
 
     public void Display_Employee_info(UserAction actionType) {
+        // readability and seconed layer validation to confirm the action type is DISPLAY_EMPLOYEE_INFO
         if (actionType == UserAction.DISPLAY_EMPLOYEE_INFO) {
+            // Read employees from the file function returns list of employees
             List<Employee> employees = readEmployeesFromFile("employee.txt");
             for (Employee employee : employees) {
                 System.out.println("Employee ID: " + employee.getID());
@@ -37,63 +39,78 @@ class Admin extends User {
     }
 
     public void AUTH_Employee(UserAction actionType) {
+        //The if condition of UserAction.AUTH_EMPLOYEE is for readability and seconed layer validation to confirm the action type is AUTH_EMPLOYEE
         if (actionType == UserAction.AUTH_EMPLOYEE) {
-            Scanner scanner = new Scanner(System.in);
-            System.out.print("Enter employee username: ");
-            String username = scanner.nextLine();
-            System.out.print("Enter employee password: ");
-            String password = scanner.nextLine();
+            try {
+                Scanner scanner = new Scanner(System.in);
+                System.out.print("Enter employee username: ");
+                String username = scanner.nextLine();
+                System.out.print("Enter employee password: ");
+                String password = scanner.nextLine();
 
-            List<Employee> employees = readEmployeesFromFile("employee.txt");
-            for (Employee employee : employees) {
-                if (employee.getUserName().equals(username) && employee.getPassword().equals(password)) {
-                    System.out.println("Authentication successful.");
-                    return;
+                List<Employee> employees = readEmployeesFromFile("employee.txt");
+                for (Employee employee : employees) {
+                    if (employee.getUserName().equals(username) && employee.getPassword().equals(password)) {
+                        System.out.println("Authentication successful.");
+                        return;
+                    }
                 }
-            }
 
-            System.out.println("Authentication failed. Employee not found.");
+                System.out.println("Authentication failed. Employee not found.");
+            } catch (NumberFormatException e) {
+                System.err.println("Invalid input. Please try again.");
+            }
         }
     }
 
     public void Create_Employee_Acc(UserAction actionType) {
+        // readability and seconed layer validation and to confirm the action type is CREATE_EMPLOYEE_ACCOUNT
         if (actionType == UserAction.CREATE_EMPLOYEE_ACCOUNT) {
-            Scanner scanner = new Scanner(System.in);
-            int id = generateRandomEmployeeId();
-            scanner.nextLine();
-            System.out.print("Enter employee first name: ");
-            String firstName = scanner.nextLine();
-            System.out.print("Enter employee last name: ");
-            String lastName = scanner.nextLine();
-            System.out.print("Enter employee username: ");
-            String username = scanner.nextLine();
-            System.out.print("Enter employee password: ");
-            String password = scanner.nextLine();
-            System.out.print("Enter employee position: ");
-            String position = scanner.nextLine();
-            System.out.print("Enter employee address: ");
-            String addressEmp = scanner.nextLine();
-            System.out.print("Enter employee graduation college: ");
-            String graduation_College = scanner.nextLine();
-            System.out.print("Enter employee graduation year: ");
-            int graduation_Year = Integer.parseInt(scanner.nextLine());
-            System.out.print("Enter employee total grade: ");
-            String total_Grade = scanner.nextLine();
-            System.out.print("Enter employee salary: ");
-            int salary = Integer.parseInt(scanner.nextLine());
+            try {
+                Scanner scanner = new Scanner(System.in);
+                int id = generateRandomEmployeeId();
+                scanner.nextLine();
+                System.out.print("Enter employee first name: ");
+                String firstName = scanner.nextLine();
+                System.out.print("Enter employee last name: ");
+                String lastName = scanner.nextLine();
+                System.out.print("Enter employee username: ");
+                String username = scanner.nextLine();
+                System.out.print("Enter employee password: ");
+                String password = scanner.nextLine();
+                System.out.print("Enter employee position: ");
+                String position = scanner.nextLine();
+                System.out.print("Enter employee address: ");
+                String addressEmp = scanner.nextLine();
+                System.out.print("Enter employee graduation college: ");
+                String graduation_College = scanner.nextLine();
+                System.out.print("Enter employee graduation year: ");
+                int graduation_Year = Integer.parseInt(scanner.nextLine());
+                System.out.print("Enter employee total grade: ");
+                String total_Grade = scanner.nextLine();
+                System.out.print("Enter employee salary: ");
+                int salary = Integer.parseInt(scanner.nextLine());
 
-            // Create a new Employee object
-            Employee newEmployee = new Employee(id, firstName, lastName, username, password, addressEmp, position, graduation_College, graduation_Year, total_Grade, salary);
+                // Create a new Employee object
+                Employee newEmployee = new Employee(id, firstName, lastName, username, password, addressEmp, position, graduation_College, graduation_Year, total_Grade, salary);
 
-            // Save the new employee to the file
-            saveEmployeeToFile("employee.txt", newEmployee);
+                // Save the new employee to the file
+                saveEmployeeToFile("employee.txt", newEmployee);
 
-            System.out.println("Employee account created successfully.");
+                System.out.println("Employee account created successfully.");
+
+            } catch (NumberFormatException e) {
+                System.err.println("Invalid input. Please try again.");
+            }
         }
     }
 
     private int generateRandomEmployeeId() {
-        // Generate a 5-digit random number
+        // Generate a random 5-digit employee ID
+        /*
+        To ensure that the generated ID is always a 5-digit number, 10000 is added to the randomly generated number.
+        This means that the smallest possible ID that can be generated is 10000 + 0 = 10000 and the largest possible ID is 10000 + 89999 = 99999.
+         */
         return 10000 + new Random().nextInt(90000);
     }
 
@@ -148,6 +165,7 @@ class Admin extends User {
 
     public void Display_Client_info(UserAction userAction) {
         // Implementation for displaying client information
+        // readability and seconed layer validation to confirm the action type is DISPLAY_CLIENT_INFO
         if (userAction == UserAction.DISPLAY_CLIENT_INFO) {
             List<Client> clients = readClientsFromFile("client.txt");
 
@@ -181,6 +199,23 @@ class Admin extends User {
         }
     }
 
+    public void Show_TransAdmin(UserAction type) {
+        if (type == UserAction.SHOW_TRANSACTIONS) {
+            // Read transactions from the file
+            List<String> transactions = readTransactionsFromFile();
+
+            // Display transactions
+            if (!transactions.isEmpty()) {
+                System.out.println("All Transactions:");
+                for (String transaction : transactions) {
+                    // Display each transaction
+                    System.out.println(transaction);
+                }
+            } else {
+                System.out.println("No transactions found.");
+            }
+        }
+    }
 
     private List<Client> readClientsFromFile(String fileName) {
         List<Client> clients = new ArrayList<>();
@@ -250,7 +285,8 @@ class Admin extends User {
         // Create the appropriate account type based on the provided information
         return switch (accountType) {
             case "Saving" -> new Saving(accountNumber, accountBalance, user, cvv, expirationDate);
-            case "Current" -> new Current(accountNumber, accountBalance, user, cvv, expirationDate, 3); // Assuming 3% fee
+            case "Current" ->
+                    new Current(accountNumber, accountBalance, user, cvv, expirationDate, 3); // Assuming 3% fee
             // Add more cases for other account types if needed
             default -> throw new IllegalArgumentException("Unsupported account type: " + accountType);
         };
