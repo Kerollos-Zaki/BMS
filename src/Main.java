@@ -116,6 +116,7 @@ public class Main {
         return 1;
     }
 
+
     private static int authenticateUserFromFile(Scanner scanner, String fileName) {
         // Authentication for employee or client
         System.out.print("Enter username: ");
