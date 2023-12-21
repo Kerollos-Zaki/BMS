@@ -12,8 +12,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-// try - catch
-
+// interfaces => to apply abstraction
+// getters and setters in classes => to apply encapsulation
+// constructor overloading => to apply polymorphism
+// Show_TransAdmin function in User Model overridden in Admin Model => to apply polymorphism
+// downcasting in authorizedUser during login => to apply polymorphism
+// User model is inherited by Admin, Employee and Client models => to apply inheritance
+// Account model is inherited by Saving and Current models => to apply inheritance
 
 public class Main {
 

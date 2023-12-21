@@ -74,16 +74,15 @@ public class User {
 
             // Display transactions for the user's account
             if (!transactions.isEmpty()) {
-                String userUserName = getUserName(); // Assuming getUserName() returns String
+                String userUserName = getUserName(); // getUserName() returns String
                 System.out.println("Transactions for User: " + userUserName);
 
                 for (String transaction : transactions) {
                     // Check if the transaction contains "Owner" key
                     if (transaction.contains("Owner")) {
-                        // Parse CSV data
                         String[] keyValuePairs = transaction.split(", ");
                         String transactionOwner = null;
-
+                        // the keyValuepairs spliting to make the data returned be like this [[time stamp, 2023], [transction id, -2213215432131]] as like key and value pair
                         // Extract the owner information
                         for (String pair : keyValuePairs) {
                             String[] entry = pair.split(": ");
@@ -108,92 +107,13 @@ public class User {
         }
     }
 
-    // this method is for the admin to see all the transactions
+    // this method is for the admin to see all the transactions so it is to be in admin class to make overriding in polymorphism
     // it is overridden in the admin class
     public void Show_TransAdmin(UserAction type) {
 
     }
 
-    public void Display_Pers_info(UserAction type) {
-        // Implementation for displaying personal information
-        if (type == UserAction.DISPLAY_PERSONAL_INFO) {
-            try {
-                // Read data from the file
-                BufferedReader fileReader = new BufferedReader(new FileReader("client.txt"));
-                String line;
-                while ((line = fileReader.readLine()) != null) {
 
-                    String[] userData = line.split(",");
-
-                    System.out.println("ID: " + userData[0]);
-                    System.out.println("First name: " + userData[1]);
-                    System.out.println("Last name: " + userData[2]);
-                    System.out.println("Username: " + userData[3]);
-                    System.out.println("Password: " + userData[4]);
-                    System.out.println("Account Number: " + userData[5]);
-                    System.out.println("Balance: " + userData[6]);
-                    System.out.println("CVV: " + userData[7]);
-                    System.out.println("Expiration Date: " + userData[8]);
-                    System.out.println("Account State: " + userData[9]);
-                    System.out.println("Telephone: " + userData[10]);
-                    System.out.println("Address: " + userData[11]);
-
-                    // Add more fields as needed
-                    System.out.println();
-                }
-                fileReader.close();
-            } catch (IOException e) {
-                System.err.println("Error reading from the file: " + e.getMessage());
-            }
-        }
-    }
-
-    public void Sign_ln(UserAction type) {
-        if (type == UserAction.SIGN_IN) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-            try {
-                System.out.print("Enter username: ");
-                String enteredUsername = reader.readLine();
-                System.out.print("Enter password: ");
-                String enteredPassword = reader.readLine();
-
-                if (enteredUsername.equals("admin") && enteredPassword.equals("admin")) {
-                    System.out.println("Sign-in successful as admin.");
-                }
-
-                // Check if entered username and password match in client data
-                if (checkCredentialsInFile("client.txt", enteredUsername, enteredPassword)) {
-                    System.out.println("Sign-in successful as client.");
-                }
-                // Check if entered username and password match in employee data
-                else if (checkCredentialsInFile("employee.txt", enteredUsername, enteredPassword)) {
-                    System.out.println("Sign-in successful as employee.");
-                } else {
-                    System.out.println("Invalid username or password. Sign-in failed.");
-                }
-            } catch (IOException e) {
-                System.err.println("Error reading from input: " + e.getMessage());
-            }
-        }
-    }
-
-
-    private boolean checkCredentialsInFile(String fileName, String enteredUsername, String enteredPassword) {
-        try (BufferedReader fileReader = new BufferedReader(new FileReader(fileName))) {
-            String line;
-            while ((line = fileReader.readLine()) != null) {
-                String[] parts = line.split(",");
-                String usernameFromFile = parts[3];
-                String passwordFromFile = parts[4];
-                if (enteredUsername.equals(usernameFromFile) && enteredPassword.equals(passwordFromFile)) {
-                    return true; // Credentials match
-                }
-            }
-        } catch (IOException e) {
-            System.err.println("Error reading from file: " + e.getMessage());
-        }
-        return false;
-    }
 
     public List<String> readTransactionsFromFile() {
         List<String> transactions = new ArrayList<>();
@@ -251,14 +171,10 @@ public class User {
         }
     }
 
+    // getters and setters
     public int getID() {
         return ID;
     }
-
-    public void setID(int ID) {
-        this.ID = ID;
-    }
-
     public String getFirstName() {
         return FirstName;
     }
@@ -291,20 +207,10 @@ public class User {
         Password = password;
     }
 
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
-    }
 
     public List<Account> getAccounts() {
         return accounts;
     }
 
-    public void setAccounts(List<Account> accounts) {
-        this.accounts = accounts;
-    }
 
 }

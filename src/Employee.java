@@ -32,6 +32,7 @@ class Employee extends User {
 
 
     public void Create_Client_Acc(UserAction action) {
+        // Implementation for creating a new client account
         if (action == UserAction.CREATE) {
             System.out.println("Creating a new client account...");
 
@@ -106,7 +107,14 @@ class Employee extends User {
 
             getClientList().add(newClient);
 
-            // Check for profit gain and apply fees after a month
+            //**********************************************************************************************************************************************//
+
+
+
+            // Check for profit gain is saving account and apply fees if Current account after a month
+
+
+            //**********************************************************************************************************************************************//
             checkProfitAndApplyFees(newClient);
 
             // Save the updated list of clients to the file
@@ -121,7 +129,6 @@ class Employee extends User {
 
         if (lastTransactionDate == null) {
             // Perform profit gain and apply fees logic here
-
             // Profit gain for Savings accounts
             for (Account account : client.getAccountList()) {
                 if (account instanceof Saving savingAccount) {
@@ -165,9 +172,6 @@ class Employee extends User {
         int max = 999999999; // Maximum 8-digit number
         return random.nextInt((max - min) + 1) + min;
     }
-
-
-
 
 
     public void Edit_Client_Acc(UserAction action) {
@@ -351,9 +355,6 @@ class Employee extends User {
     }
 
 
-
-
-
     public void Delete_Client_Acc(UserAction action) {
         if (action == UserAction.DELETE) {
             System.out.println("Deleting a client account...");
@@ -397,7 +398,7 @@ class Employee extends User {
             for (Client client : clientList) {
                 writer.print(client.getID() + "," + client.getFirstName() + "," + client.getLastName()
                         + "," + client.getUserName() + "," + client.getPassword()
-                        + "," + randomAccountNumber  + ","
+                        + "," + randomAccountNumber + ","
                         + client.getTelephone_Number() + "," + client.getAddress());
 
                 // Save account details for each client
@@ -428,11 +429,13 @@ class Employee extends User {
         // Format the expiration date as MM / YY
         return String.format("%02d/%02d", randomMonth, randomYear);
     }
+
     private static int generateRandomCVV() {
         // Generate a random 3-digit CVV
         Random random = new Random();
         return 100 + random.nextInt(900);
     }
+
     private Client getClientById(int searchClientID) {
         for (Client client : clientList) {
             if (client.getID() == searchClientID) {
