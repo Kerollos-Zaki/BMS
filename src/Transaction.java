@@ -51,76 +51,71 @@ class Transaction {
         }
     }
 
+    private Account findAccountByNumber(String accountNumber, List<User> users) {
+        for (User user : users) {
+            if (user instanceof Client client) {
+                List<Account> accounts = client.getAccounts();
+
+                for (Account account : accounts) {
+                    if (String.valueOf(account.getAccountNumber()).equals(accountNumber)) {
+                        return account;
+                    }
+                }
+            }
+        }
+        return null;  // Return null if the account is not found
+    }
+
+
     private void performTransfer() {
-        // Get the source account
+        // Logic for transfer
+        System.out.println("Processing transfer...");
+
+        // Get the source and destination accounts
         Account sourceAccount = getSource_Account();
+        Account destinationAccountNumber = getDestination_Account();
 
-        // If the source account is still null, return
-        if (sourceAccount == null) {
-            System.out.println("Error: Source account not found. Transfer failed.");
-            return;
-        }
+        System.out.println(sourceAccount.getAccount_Number());
+        // Check if the source account and destination account number are not null
+        if (sourceAccount != null && destinationAccountNumber != null) {
+            // Check if the destination account number is not empty
+            if (!destinationAccountNumber.equals("")) {
+                try {
+                    // Parse the destination account number to an integer
+                    int destinationAccountInt = destinationAccountNumber.getAccount_Number();
 
-        // Get the source client
-        Client sourceClient = (Client) sourceAccount.getOwner();
+                    // Get the destination account
+                    Account destinationAccount = findAccountByNumber(String.valueOf(destinationAccountInt), userList);
 
-        // Display account options to the user
-        System.out.println("Select the source account for transfer:");
-        System.out.println("1. Savings");
-        System.out.println("2. Current");
+                    // Check if the destination account was found
+                    if (destinationAccount != null) {
+                        // Check if the source account has sufficient balance
+                        if (sourceAccount.getBalance() >= getAmount_Money()) {
+                            // Deduct money from the source account
+                            sourceAccount.setBalance(sourceAccount.getBalance() - getAmount_Money());
 
-        Scanner scanner = new Scanner(System.in);
-        int sourceAccountChoice = scanner.nextInt();
+                            // Add money to the destination account
+                            destinationAccount.setBalance(destinationAccount.getBalance() + getAmount_Money());
 
-        // Use a separate variable to store the chosen source account
-        Account selectedSourceAccount;
+                            System.out.println("Transfer successful!");
 
-        switch (sourceAccountChoice) {
-            case 1:
-                selectedSourceAccount = sourceClient.getSavingAccount();
-                break;
-            case 2:
-                selectedSourceAccount = sourceClient.getCurrentAccount();
-                break;
-            default:
-                System.out.println("Invalid choice. Transfer failed.");
-                return;
-        }
-
-        // Get the destination account number from the user
-        System.out.print("Enter the destination account number: ");
-        String destinationAccountNumber = scanner.next();
-
-        // Find the destination account
-        Account destinationAccount = sourceClient.getAccountList().stream()
-                .filter(account -> String.valueOf(account.getAccount_Number()).equals(destinationAccountNumber))
-                .findFirst()
-                .orElse(null);
-
-        // Check if the destination account was found
-        if (destinationAccount != null) {
-            // Get the transfer amount from the user
-            System.out.print("Enter the transfer amount: ");
-            int transferAmount = scanner.nextInt();
-
-            // Check if the source account has sufficient balance
-            if (selectedSourceAccount.getBalance() >= transferAmount) {
-                // Deduct money from the source account
-                selectedSourceAccount.setBalance(selectedSourceAccount.getBalance() - transferAmount);
-
-                // Add money to the destination account
-                destinationAccount.setBalance(destinationAccount.getBalance() + transferAmount);
-
-                System.out.println("Transfer successful!");
-
-                // Update balances in the file
-                updateBalanceInFile(selectedSourceAccount);
-                updateBalanceInFile(destinationAccount);
+                            // Update balances in the file
+                            updateBalanceInFile(sourceAccount);
+                            updateBalanceInFile(destinationAccount);
+                        } else {
+                            System.out.println("Error: Insufficient funds for transfer. Transaction failed.");
+                        }
+                    } else {
+                        System.out.println("Error: Destination account not found. Account Number: " + destinationAccountInt);
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Error: Invalid destination account number format. Account Number: " + destinationAccountNumber);
+                }
             } else {
-                System.out.println("Error: Insufficient funds for transfer. Transaction failed.");
+                System.out.println("Error: Destination account number is empty.");
             }
         } else {
-            System.out.println("Error: Destination account not found. Account Number: " + destinationAccountNumber);
+            System.out.println("Error: Source account or destination account number is null.");
         }
     }
 
@@ -348,36 +343,6 @@ class Transaction {
         }
     }
 
-
-    private Account findAccountByNumber(String accountNumber, List<User> users) {
-        String fileName = "client.txt";
-
-        try {
-            File inputFile = new File(fileName);
-            Scanner scanner = new Scanner(inputFile);
-
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                String[] parts = line.split(",");
-
-                // Assuming the account number is stored as a string, adjust the index accordingly
-                String storedAccountNumber = parts[5].trim();
-
-                // Compare the stored account number with the provided account number
-                if (storedAccountNumber.equals(accountNumber)) {
-                    // Create and return the Account object based on the found data
-                    return createAccountFromLine(parts, users);
-                }
-            }
-
-            scanner.close();
-        } catch (IOException e) {
-            System.err.println("Error reading the file: " + e.getMessage());
-        }
-
-        // Return null if the account is not found
-        return null;
-    }
 
 
     private Account createAccountFromLine(String[] parts, List<User> users) {
